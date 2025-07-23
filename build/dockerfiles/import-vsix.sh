@@ -6,7 +6,13 @@ set -o pipefail
 ./start-services.sh
 
 # install temporary nodejs
-mkdir -p /tmp/opt/nodejs && curl -sL https://nodejs.org/download/release/v18.16.1/node-v18.16.1-linux-x64.tar.gz | tar xzf - -C /tmp/opt/nodejs --strip-components=1
+ARCH=$(uname -m)
+if [[ "$ARCH" == "s390x" ]]; then
+  NODE_URL="https://nodejs.org/download/release/v18.16.1/node-v18.16.1-linux-s390x.tar.gz"
+else
+  NODE_URL="https://nodejs.org/download/release/v18.16.1/node-v18.16.1-linux-x64.tar.gz"
+fi
+mkdir -p /tmp/opt/nodejs && curl -sL "$NODE_URL" | tar xzf - -C /tmp/opt/nodejs --strip-components=1
 # add path
 export PATH=/tmp/opt/nodejs/bin:$PATH
 
